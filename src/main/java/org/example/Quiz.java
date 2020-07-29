@@ -1,6 +1,6 @@
 package org.example;
 
-public class Quiz {
+public class Quiz implements Comparable<Quiz> {
     private String name;
 
     public Quiz(String name) {
@@ -20,5 +20,10 @@ public class Quiz {
         return "Quiz{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Quiz o) {
+        return name.compareTo(o.name);
     }
 }
