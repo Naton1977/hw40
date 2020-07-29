@@ -5,6 +5,8 @@ public class App {
 
         AddQuiz addQuiz = new AddQuiz();
         addQuiz.addQuiz();
+        CreateUser createUser =new CreateUser();
+        createUser.doIt(null);
 
     }
 }

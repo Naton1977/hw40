@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class AddQuiz {
-    List<UserUtil> userUtils = new ArrayList<>();
+  public static  List<UserUtil> userUtils = new ArrayList<>();
     Map<Quiz, List <Question>> quiz = new TreeMap<>();
 
 
