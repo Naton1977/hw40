@@ -11,6 +11,20 @@ public class AddQuiz {
     Map<Quiz, List <Question>> quiz = new TreeMap<>();
 
 
+    public void addQuiz(){
+        Menu menu = new Menu("Главное меню");
+
+        Menu menuLevel1_1 = new Menu("Зарегистрировать пользователя");
+        Menu menuLevel1_2 = new Menu("Вход пользователя");
+        Menu menuLevel1_3 = new Menu("Изменить login и password");
+        menu.addSubMenu(menuLevel1_1);
+        menu.addSubMenu(menuLevel1_2);
+        menu.addSubMenu(menuLevel1_3);
+
+        menu.print();
+    }
+
+
 
 
     private static void saveObjectUserUtil(List<UserUtil> userUtils, String fileName) throws FileNotFoundException {

@@ -35,7 +35,7 @@ public class Menu implements MenuInterface {
 
     public void print (){
         for (int i = 0; i < menuList.size(); i++) {
-            System.out.println((i +1) + menuList.get(i).name);
+            System.out.println((i +1) + " - " + menuList.get(i).name);
         }
     }
 
