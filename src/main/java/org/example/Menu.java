@@ -13,7 +13,7 @@ public class Menu implements MenuInterface {
         action = null;
     }
 
-    public Menu (String name, Action<Context> action){
+    public Menu(String name, Action<Context> action) {
         this.name = name;
         this.action = action;
     }
@@ -33,9 +33,19 @@ public class Menu implements MenuInterface {
         menuList.add(sabMenu);
     }
 
-    public void print (){
+    public void print() {
         for (int i = 0; i < menuList.size(); i++) {
-            System.out.println((i +1) + " - " + menuList.get(i).name);
+            System.out.println((i + 1) + " - " + menuList.get(i).name);
+        }
+    }
+
+    public void action(int num) {
+        if (!AddQuiz.exitTrue) {
+            for (int i = 0; i < menuList.size(); i++) {
+                if (i == (num - 1)) {
+                    menuList.get(i).make(null);
+                }
+            }
         }
     }
 

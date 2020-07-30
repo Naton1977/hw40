@@ -5,26 +5,87 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Scanner;
 
 public class AddQuiz {
-  public static  List<UserUtil> userUtils = new ArrayList<>();
-    Map<Quiz, List <Question>> quiz = new TreeMap<>();
+    public static boolean stepMenu1_2;
+    public static boolean exitTrue;
+    private String status;
+    private int statusInt;
+    public static List<UserUtil> userUtils = new ArrayList<>();
+    public static Map<Quiz, List<Question>> quiz = new TreeMap<>();
+    Menu menuLevel1_2;
+    Scanner scanner = new Scanner(System.in);
 
 
-    public void addQuiz(){
-        Menu menu = new Menu("Главное меню");
+    public void addQuiz() throws FileNotFoundException {
+        String fileName1 = "UserUtil.dat";
+        File file1 = new File(fileName1);
+        if (file1.exists()) {
+            userUtils = readObjectUserUtil(fileName1);
+        }
 
-        Menu menuLevel1_1 = new Menu("Зарегистрировать пользователя");
-        Menu menuLevel1_2 = new Menu("Вход пользователя");
-        Menu menuLevel1_3 = new Menu("Изменить login и password");
-        menu.addSubMenu(menuLevel1_1);
-        menu.addSubMenu(menuLevel1_2);
-        menu.addSubMenu(menuLevel1_3);
+        String fileName2 = "Quiz.dat";
+        File file2 = new File(fileName2);
+        if (file2.exists()) {
+            quiz = readObjectQuiz(fileName2);
+        }
 
-        menu.print();
+        do {
+
+            Menu menu = new Menu("Главное меню");
+
+            Menu menuLevel1_1;
+            if (userUtils.size() == 0) {
+                CreateUser createUser = new CreateUser();
+                menuLevel1_1 = new Menu("Зарегистрировать пользователя", createUser);
+                menu.addSubMenu(menuLevel1_1);
+            }
+
+            if (userUtils.size() == 1) {
+                UserAuthorization userAuthorization = new UserAuthorization();
+                menuLevel1_2 = new Menu("Вход пользователя",userAuthorization);
+                menu.addSubMenu(menuLevel1_2);
+            }
+
+            if (userUtils.size() > 0) {
+                if (userUtils.get(0).getLogin().equals("Admin") && userUtils.get(0).getPassword().equals("Admin")) {
+                    ChangeLoginPassword changeLoginPassword = new ChangeLoginPassword();
+                    Menu menuLevel1_3 = new Menu("Изменить login и password", changeLoginPassword);
+                    menu.addSubMenu(menuLevel1_3);
+                }
+            }
+
+            menu.print();
+
+            menu.action(quizAction());
+
+            if (stepMenu1_2){
+                PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
+                Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
+                menuLevel1_2.addSubMenu(menu1_2Level2_1);
+
+
+                AddQuizQuestion addQuizQuestion = new AddQuizQuestion();
+                Menu menu1_2Level2_2 = new Menu("Создать викторину",addQuizQuestion);
+
+                Menu menu1_2Level2_3 = new Menu("Редактировать викторину");
+                Menu menu1_2Level2_4 = new Menu("Удалить викторину");
+
+                menuLevel1_2.addSubMenu(menu1_2Level2_2);
+                menuLevel1_2.addSubMenu(menu1_2Level2_3);
+                menuLevel1_2.addSubMenu(menu1_2Level2_4);
+                menuLevel1_2.print();
+                menuLevel1_2.action(quizAction());
+            }
+
+
+        } while (!"exit".equals(status));
+
+
+        saveObjectUserUtil(userUtils, "UserUtil.dat");
+        saveObjectQuiz(quiz, "Quiz.dat");
     }
-
-
 
 
     private static void saveObjectUserUtil(List<UserUtil> userUtils, String fileName) throws FileNotFoundException {
@@ -36,7 +97,7 @@ public class AddQuiz {
     }
 
     private static List<UserUtil> readObjectUserUtil(String fileName) throws FileNotFoundException {
-        List <UserUtil> userUtils= null;
+        List<UserUtil> userUtils = null;
         try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
             userUtils = (List<UserUtil>) input.readObject();
 
@@ -47,7 +108,7 @@ public class AddQuiz {
     }
 
 
-    private static void saveObjectUserQuiz(Map<Quiz,List <Question>> question, String fileName) throws FileNotFoundException {
+    private static void saveObjectQuiz(Map<Quiz, List<Question>> question, String fileName) throws FileNotFoundException {
         try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
             output.writeObject(question);
         } catch (IOException e) {
@@ -55,8 +116,8 @@ public class AddQuiz {
         }
     }
 
-    private static Map <Quiz, List<Question>> readObjectQuiz(String fileName) throws FileNotFoundException {
-        Map <Quiz, List <Question>> quiz = null;
+    private static Map<Quiz, List<Question>> readObjectQuiz(String fileName) throws FileNotFoundException {
+        Map<Quiz, List<Question>> quiz = null;
         try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
             quiz = (Map<Quiz, List<Question>>) input.readObject();
 
@@ -64,6 +125,23 @@ public class AddQuiz {
             e.printStackTrace();
         }
         return quiz;
+    }
+    public int quizAction(){
+        do {
+            System.out.println("exit -  выход");
+            status = scanner.nextLine();
+            if("exit".equals(status)){
+                exitTrue = true;
+                break;
+            }
+            try {
+                statusInt = Integer.parseInt(status);
+                break;
+            } catch (Exception e) {
+                System.out.println("Введите правильно число");
+            }
+        } while (true);
+        return statusInt;
     }
 
 }
