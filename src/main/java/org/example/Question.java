@@ -1,20 +1,25 @@
 package org.example;
 
-public class Question {
-    private String question;
-    private String answer1;
-    private String answer2;
-    private String answer3;
-    private String answer4;
-    private int correctAnswer;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Question(String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer) {
+public class Question implements Serializable {
+    private String theme;
+    private String question;
+    List<Answer> answers = new ArrayList<>();
+
+    public Question(String theme, String question) {
+        this.theme = theme;
         this.question = question;
-        this.answer1 = answer1;
-        this.answer2 = answer2;
-        this.answer3 = answer3;
-        this.answer4 = answer4;
-        this.correctAnswer = correctAnswer;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
     public String getQuestion() {
@@ -25,55 +30,20 @@ public class Question {
         this.question = question;
     }
 
-    public String getAnswer1() {
-        return answer1;
+    public void addQuestion(Answer answer){
+        answers.add(answer);
     }
-
-    public void setAnswer1(String answer1) {
-        this.answer1 = answer1;
-    }
-
-    public String getAnswer2() {
-        return answer2;
-    }
-
-    public void setAnswer2(String answer2) {
-        this.answer2 = answer2;
-    }
-
-    public String getAnswer3() {
-        return answer3;
-    }
-
-    public void setAnswer3(String answer3) {
-        this.answer3 = answer3;
-    }
-
-    public String getAnswer4() {
-        return answer4;
-    }
-
-    public void setAnswer4(String answer4) {
-        this.answer4 = answer4;
-    }
-
-    public int getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    public void setCorrectAnswer(int correctAnswer) {
-        this.correctAnswer = correctAnswer;
+    public void printAnswer(){
+        for (int i = 0; i < answers.size() ; i++) {
+            System.out.println( (i + 1) + " - " +answers.get(i).getAnswer());
+        }
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "question='" + question + '\'' +
-                ", answer1='" + answer1 + '\'' +
-                ", answer2='" + answer2 + '\'' +
-                ", answer3='" + answer3 + '\'' +
-                ", answer4='" + answer4 + '\'' +
-                ", correctAnswer=" + correctAnswer +
+                "theme='" + theme + '\'' +
+                ", question='" + question + '\'' +
                 '}';
     }
 }

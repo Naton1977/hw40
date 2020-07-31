@@ -1,6 +1,8 @@
 package org.example;
 
-public class Quiz implements Comparable<Quiz> {
+import java.io.Serializable;
+
+public class Quiz implements Comparable<Quiz>, Serializable {
     private String name;
 
     public Quiz(String name) {

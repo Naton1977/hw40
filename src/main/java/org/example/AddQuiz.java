@@ -25,12 +25,6 @@ public class AddQuiz {
             userUtils = readObjectUserUtil(fileName1);
         }
 
-        String fileName2 = "Quiz.dat";
-        File file2 = new File(fileName2);
-        if (file2.exists()) {
-            quiz = readObjectQuiz(fileName2);
-        }
-
         do {
 
             Menu menu = new Menu("Главное меню");
@@ -59,6 +53,9 @@ public class AddQuiz {
             menu.print();
 
             menu.action(quizAction());
+            if(exitTrue){
+                break;
+            }
 
             if (stepMenu1_2){
                 PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
@@ -66,8 +63,8 @@ public class AddQuiz {
                 menuLevel1_2.addSubMenu(menu1_2Level2_1);
 
 
-                AddQuizQuestion addQuizQuestion = new AddQuizQuestion();
-                Menu menu1_2Level2_2 = new Menu("Создать викторину",addQuizQuestion);
+                CreateQuiz createQuiz = new CreateQuiz();
+                Menu menu1_2Level2_2 = new Menu("Создать викторину",createQuiz);
 
                 Menu menu1_2Level2_3 = new Menu("Редактировать викторину");
                 Menu menu1_2Level2_4 = new Menu("Удалить викторину");
@@ -80,11 +77,10 @@ public class AddQuiz {
             }
 
 
-        } while (!"exit".equals(status));
+        } while (true);
 
 
         saveObjectUserUtil(userUtils, "UserUtil.dat");
-        saveObjectQuiz(quiz, "Quiz.dat");
     }
 
 
@@ -108,24 +104,8 @@ public class AddQuiz {
     }
 
 
-    private static void saveObjectQuiz(Map<Quiz, List<Question>> question, String fileName) throws FileNotFoundException {
-        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            output.writeObject(question);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private static Map<Quiz, List<Question>> readObjectQuiz(String fileName) throws FileNotFoundException {
-        Map<Quiz, List<Question>> quiz = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            quiz = (Map<Quiz, List<Question>>) input.readObject();
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return quiz;
-    }
     public int quizAction(){
         do {
             System.out.println("exit -  выход");
