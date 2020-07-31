@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Menu implements MenuInterface {
     }
 
     @Override
-    public void make(Context context) throws FileNotFoundException {
+    public void make(Context context) throws IOException {
         action.doIt(context);
     }
 
@@ -40,7 +41,7 @@ public class Menu implements MenuInterface {
         }
     }
 
-    public void action(int num) throws FileNotFoundException {
+    public void action(int num) throws IOException {
         if (!AddQuiz.exitTrue) {
             for (int i = 0; i < menuList.size(); i++) {
                 if (i == (num - 1)) {

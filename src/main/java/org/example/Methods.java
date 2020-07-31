@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,7 @@ class PrintListOfQuizzes implements Action<Context> {
 class CreateQuiz implements Action<Context>{
 
     @Override
-    public void doIt(Context context) throws FileNotFoundException {
+    public void doIt(Context context) throws IOException {
         QuizMapAdd quizMapAdd =  QuizMapAdd.getInstance();
         quizMapAdd.addQuiz();
     }
@@ -88,7 +89,7 @@ class CreateQuiz implements Action<Context>{
 class EditQuiz implements Action<Context>{
 
     @Override
-    public void doIt(Context context) throws FileNotFoundException {
+    public void doIt(Context context) throws IOException {
         QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
         quizMapAdd.editQuiz();
 

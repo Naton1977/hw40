@@ -37,7 +37,7 @@ public class QuizMapAdd {
         return instance;
     }
 
-    public void addQuiz() throws FileNotFoundException {
+    public void addQuiz() throws IOException {
         String fileName1 = "Quiz.dat";
         File file1 = new File(fileName1);
         if (file1.exists()) {
@@ -83,6 +83,10 @@ public class QuizMapAdd {
                 } while (!"1".equals(correctAnswer) && !"2".equals(correctAnswer));
                 question.addQuestion(answer);
             } while (true);
+
+            MixedQuiz mixedQuiz = MixedQuiz.getInstance();
+            mixedQuiz.addMixedQuestion(question);
+
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
                 if (r.getValue().size() <= 20) {
                     r.getValue().add(question);
@@ -107,7 +111,7 @@ public class QuizMapAdd {
         }
     }
 
-    public void editQuiz() throws FileNotFoundException {
+    public void editQuiz() throws IOException {
         String fileName1 = "Quiz.dat";
         File file1 = new File(fileName1);
         if (file1.exists()) {

@@ -17,7 +17,7 @@ public class AddQuiz {
     Scanner scanner = new Scanner(System.in);
 
 
-    public void addQuiz() throws FileNotFoundException {
+    public void addQuiz() throws IOException {
         String fileName1 = "UserUtil.dat";
         File file1 = new File(fileName1);
         if (file1.exists()) {
