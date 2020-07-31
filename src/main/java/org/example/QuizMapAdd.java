@@ -69,16 +69,18 @@ public class QuizMapAdd {
                 if ("exit".equals(this.answer)) {
                     break;
                 }
-                System.out.println("Введите это правильный ответ?");
-                System.out.println("1 - правильный ответ");
-                System.out.println("2 - не правильный ответ");
-                correctAnswer = scanner.nextLine();
-                if ("1".equals(correctAnswer)) {
-                    answer = new Answer(name, this.answer, CorrectAnswer.YES);
-                }
-                if ("2".equals(correctAnswer)) {
-                    answer = new Answer(name, this.answer, CorrectAnswer.NO);
-                }
+                do {
+                    System.out.println("Введите это правильный ответ?");
+                    System.out.println("1 - правильный ответ");
+                    System.out.println("2 - не правильный ответ");
+                    correctAnswer = scanner.nextLine();
+                    if ("1".equals(correctAnswer)) {
+                        answer = new Answer(name, this.answer, CorrectAnswer.YES);
+                    }
+                    if ("2".equals(correctAnswer)) {
+                        answer = new Answer(name, this.answer, CorrectAnswer.NO);
+                    }
+                } while (!"1".equals(correctAnswer) && !"2".equals(correctAnswer));
                 question.addQuestion(answer);
             } while (true);
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
@@ -208,30 +210,37 @@ public class QuizMapAdd {
                         }
                     });
 
-                    Menu menuP2Level1_4 = new Menu("Создать вопрос",context -> {
+                    Menu menuP2Level1_4 = new Menu("Создать вопрос", context -> {
                         Answer answer1 = null;
-                                System.out.println("Введите новый вопрос");
-                                newQuestion = scanner.nextLine();
-                                questionList.add(new Question(name,newQuestion));
-                        for (int i = 0; i < questionList.size(); i++) {
-                            if(questionList.get(i).getQuestion().equals(newQuestion)){
-                                do {
-                                    System.out.println("Введите вариант ответа");
-                                    System.out.println("exit - выход");
-                                    answer = scanner.nextLine();
-                                    System.out.println("1 - это правильный ответ");
-                                    System.out.println("2 - это не правильный ответ");
-                                    correctAnswer = scanner.nextLine();
-                                    if ("1".equals(correctAnswer)) {
-                                        answer1 = new Answer(name, answer, CorrectAnswer.YES);
-                                    }
-                                    if ("2".equals(correctAnswer)) {
-                                        answer1 = new Answer(name, answer, CorrectAnswer.NO);
-                                    }
-                                    questionList.get(i).addQuestion(answer1);
-                                    System.out.println("Ответ добавлен");
-                                } while (!"exit".equals(answer));
+                        if(questionList.size()<20) {
+                            System.out.println("Введите новый вопрос");
+                            newQuestion = scanner.nextLine();
+                            questionList.add(new Question(name, newQuestion));
+                            for (int i = 0; i < questionList.size(); i++) {
+                                if (questionList.get(i).getQuestion().equals(newQuestion)) {
+                                    do {
+                                        System.out.println("Введите вариант ответа");
+                                        System.out.println("exit - выход");
+                                        answer = scanner.nextLine();
+                                        if ("exit".equals(answer)) {
+                                            break;
+                                        }
+                                        System.out.println("1 - это правильный ответ");
+                                        System.out.println("2 - это не правильный ответ");
+                                        correctAnswer = scanner.nextLine();
+                                        if ("1".equals(correctAnswer)) {
+                                            answer1 = new Answer(name, answer, CorrectAnswer.YES);
+                                        }
+                                        if ("2".equals(correctAnswer)) {
+                                            answer1 = new Answer(name, answer, CorrectAnswer.NO);
+                                        }
+                                        questionList.get(i).addQuestion(answer1);
+                                        System.out.println("Ответ добавлен");
+                                    } while (true);
+                                }
                             }
+                        } else {
+                            System.out.println("В викторине может быть не более 20 вопросов");
                         }
                     });
 
@@ -244,7 +253,6 @@ public class QuizMapAdd {
                         menu2.print();
                         menu2.action(quizAction());
                     } while (!"exit".equals(status));
-
                 }
             }
             count++;
