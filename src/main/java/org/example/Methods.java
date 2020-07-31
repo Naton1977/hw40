@@ -84,3 +84,23 @@ class CreateQuiz implements Action<Context>{
         quizMapAdd.addQuiz();
     }
 }
+
+class EditQuiz implements Action<Context>{
+
+    @Override
+    public void doIt(Context context) throws FileNotFoundException {
+        QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+        quizMapAdd.editQuiz();
+
+    }
+}
+
+class DeleteQuiz implements Action<Context>{
+
+
+    @Override
+    public void doIt(Context context) throws FileNotFoundException {
+        QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+        quizMapAdd.deleteQuiz();
+    }
+}

@@ -3,29 +3,29 @@ package org.example;
 import java.io.Serializable;
 
 public class Quiz implements Comparable<Quiz>, Serializable {
-    private String name;
+    private String theme;
 
     public Quiz(String name) {
-        this.name = name;
+        this.theme = name;
     }
 
     public String getName() {
-        return name;
+        return theme;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.theme = name;
     }
 
     @Override
     public String toString() {
         return "Quiz{" +
-                "name='" + name + '\'' +
+                "name='" + theme + '\'' +
                 '}';
     }
 
     @Override
     public int compareTo(Quiz o) {
-        return name.compareTo(o.name);
+        return theme.compareTo(o.theme);
     }
 }

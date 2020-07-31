@@ -13,7 +13,6 @@ public class AddQuiz {
     private String status;
     private int statusInt;
     public static List<UserUtil> userUtils = new ArrayList<>();
-    public static Map<Quiz, List<Question>> quiz = new TreeMap<>();
     Menu menuLevel1_2;
     Scanner scanner = new Scanner(System.in);
 
@@ -58,22 +57,29 @@ public class AddQuiz {
             }
 
             if (stepMenu1_2){
-                PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
-                Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
-                menuLevel1_2.addSubMenu(menu1_2Level2_1);
+
+                    PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
+                    Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
+                    menuLevel1_2.addSubMenu(menu1_2Level2_1);
 
 
-                CreateQuiz createQuiz = new CreateQuiz();
-                Menu menu1_2Level2_2 = new Menu("Создать викторину",createQuiz);
+                    CreateQuiz createQuiz = new CreateQuiz();
+                    Menu menu1_2Level2_2 = new Menu("Создать викторину", createQuiz);
 
-                Menu menu1_2Level2_3 = new Menu("Редактировать викторину");
-                Menu menu1_2Level2_4 = new Menu("Удалить викторину");
 
-                menuLevel1_2.addSubMenu(menu1_2Level2_2);
-                menuLevel1_2.addSubMenu(menu1_2Level2_3);
-                menuLevel1_2.addSubMenu(menu1_2Level2_4);
-                menuLevel1_2.print();
-                menuLevel1_2.action(quizAction());
+                    EditQuiz editQuiz = new EditQuiz();
+                    Menu menu1_2Level2_3 = new Menu("Редактировать викторину", editQuiz);
+
+                    DeleteQuiz deleteQuiz = new DeleteQuiz();
+                    Menu menu1_2Level2_4 = new Menu("Удалить викторину", deleteQuiz);
+
+                    menuLevel1_2.addSubMenu(menu1_2Level2_2);
+                    menuLevel1_2.addSubMenu(menu1_2Level2_3);
+                    menuLevel1_2.addSubMenu(menu1_2Level2_4);
+                    do{
+                    menuLevel1_2.print();
+                    menuLevel1_2.action(quizAction());
+                } while (!"exit".equals(status));
             }
 
 
