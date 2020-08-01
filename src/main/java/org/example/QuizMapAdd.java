@@ -1,6 +1,5 @@
 package org.example;
 
-import org.w3c.dom.ls.LSOutput;
 
 import java.io.*;
 import java.util.*;
@@ -9,6 +8,7 @@ public class QuizMapAdd {
     private String name;
     private static QuizMapAdd instance;
     Map<Quiz, List<Question>> quiz = new TreeMap<>();
+    List<Question> mixedList = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private int count;
     private String question;
@@ -30,7 +30,6 @@ public class QuizMapAdd {
     }
 
     public static QuizMapAdd getInstance() {
-        Scanner scanner = new Scanner(System.in);
         if (instance == null) {
             instance = new QuizMapAdd();
         }
@@ -43,6 +42,13 @@ public class QuizMapAdd {
         if (file1.exists()) {
             quiz = readObjectQuiz(fileName1);
         }
+
+        String fileName = "MixedQuestion.dat";
+        File file = new File(fileName);
+        if (file.exists()) {
+            mixedList = readObjectMixedQuestion(fileName);
+        }
+
         Question question;
         System.out.println("Введите название викторины");
         name = scanner.nextLine();
@@ -83,9 +89,7 @@ public class QuizMapAdd {
                 } while (!"1".equals(correctAnswer) && !"2".equals(correctAnswer));
                 question.addQuestion(answer);
             } while (true);
-
-            MixedQuiz mixedQuiz = MixedQuiz.getInstance();
-            mixedQuiz.addMixedQuestion(question);
+            mixedList.add(question);
 
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
                 if (r.getValue().size() <= 20) {
@@ -96,6 +100,7 @@ public class QuizMapAdd {
             }
         } while (true);
         saveObjectQuiz(quiz, "Quiz.dat");
+        saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
     }
 
     public void printListQuiz() throws FileNotFoundException {
@@ -117,6 +122,12 @@ public class QuizMapAdd {
         if (file1.exists()) {
             quiz = readObjectQuiz(fileName1);
         }
+        String fileName = "MixedQuestion.dat";
+        File file = new File(fileName);
+        if (file.exists()) {
+            mixedList = readObjectMixedQuestion(fileName);
+        }
+
         printListQuiz();
         do {
             System.out.println("Ведите номер той викторины которую нужно редактировать");
@@ -171,7 +182,8 @@ public class QuizMapAdd {
                         }
                         for (int i = 0; i < questionList.size(); i++) {
                             if (i == (deleteNumberInt - 1)) {
-                                questionList.remove(i);
+                                Question qw = questionList.remove(i);
+                                mixedList.remove(qw);
                                 System.out.println("Вопрос удален");
                             }
                         }
@@ -192,12 +204,16 @@ public class QuizMapAdd {
                             if (i == (editQuestionInt - 1)) {
                                 System.out.println("Введите новый вопрос");
                                 newQuestion = scanner.nextLine();
+                                mixedList.remove(questionList.get(i));
                                 questionList.get(i).setQuestion(newQuestion);
                                 questionList.get(i).deleteAnswers();
                                 do {
                                     System.out.println("Введите вариант ответа");
                                     System.out.println("exit - выход");
                                     answer = scanner.nextLine();
+                                    if ("exit".equals(answer)) {
+                                        break;
+                                    }
                                     System.out.println("1 - это правильный ответ");
                                     System.out.println("2 - это не правильный ответ");
                                     correctAnswer = scanner.nextLine();
@@ -209,14 +225,15 @@ public class QuizMapAdd {
                                     }
                                     questionList.get(i).addQuestion(answer1);
                                     System.out.println("Ответ добавлен");
-                                } while (!"exit".equals(answer));
+                                } while (true);
+                                mixedList.add(questionList.get(i));
                             }
                         }
                     });
 
                     Menu menuP2Level1_4 = new Menu("Создать вопрос", context -> {
                         Answer answer1 = null;
-                        if(questionList.size()<20) {
+                        if (questionList.size() < 20) {
                             System.out.println("Введите новый вопрос");
                             newQuestion = scanner.nextLine();
                             questionList.add(new Question(name, newQuestion));
@@ -241,6 +258,7 @@ public class QuizMapAdd {
                                         questionList.get(i).addQuestion(answer1);
                                         System.out.println("Ответ добавлен");
                                     } while (true);
+                                    mixedList.add(questionList.get(i));
                                 }
                             }
                         } else {
@@ -263,16 +281,23 @@ public class QuizMapAdd {
         }
 
         saveObjectQuiz(quiz, "Quiz.dat");
+        saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
 
     }
 
 
-    public void deleteQuiz() throws FileNotFoundException {
+    public void deleteQuiz() throws IOException {
         String fileName1 = "Quiz.dat";
         File file1 = new File(fileName1);
         if (file1.exists()) {
             quiz = readObjectQuiz(fileName1);
         }
+        String fileName = "MixedQuestion.dat";
+        File file = new File(fileName);
+        if (file.exists()) {
+            mixedList = readObjectMixedQuestion(fileName);
+        }
+
         Quiz quiz1 = null;
         printListQuiz();
         do {
@@ -290,17 +315,38 @@ public class QuizMapAdd {
         for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
             if (deleteNumberInt == count) {
                 quiz1 = r.getKey();
+                String name = quiz1.getName();
+                for (int i = 0; i < mixedList.size(); i++) {
+                    if (mixedList.get(i).getTheme().equals(name)) {
+                        mixedList.remove(i);
+                    }
+                }
                 deleteTrue = true;
             }
             count++;
         }
         if (deleteTrue) {
             quiz.remove(quiz1);
+
             System.out.println("Викторина успешно удаленна");
         } else {
             System.out.println("Викторины под таким номером нет");
         }
         saveObjectQuiz(quiz, "Quiz.dat");
+        saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
+    }
+
+    public void printMixedList() throws IOException {
+        String fileName = "MixedQuestion.dat";
+        File file = new File(fileName);
+        if (file.exists()) {
+            mixedList = readObjectMixedQuestion(fileName);
+        }
+
+        for (int i = 0; i < mixedList.size(); i++) {
+            System.out.println(mixedList.get(i).getQuestion());
+
+        }
     }
 
     private static void saveObjectQuiz(Map<Quiz, List<Question>> question, String fileName) throws FileNotFoundException {
@@ -337,6 +383,24 @@ public class QuizMapAdd {
             }
         } while (true);
         return statusInt;
+    }
+
+    private static void saveObjectMixedQuestion(List<Question> mixedQuestion, String fileName) throws FileNotFoundException {
+        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            output.writeObject(mixedQuestion);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private static List<Question> readObjectMixedQuestion(String fileName) throws IOException {
+        List<Question> mixedQuestion = null;
+        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
+            mixedQuestion = (List<Question>) input.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return mixedQuestion;
     }
 
 }

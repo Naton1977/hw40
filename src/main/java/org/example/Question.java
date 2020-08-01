@@ -30,17 +30,18 @@ public class Question implements Serializable {
         this.question = question;
     }
 
-    public void addQuestion(Answer answer){
+    public void addQuestion(Answer answer) {
         answers.add(answer);
     }
-    public void deleteAnswers(){
+
+    public void deleteAnswers() {
         answers.clear();
     }
 
 
-    public void printAnswer(){
-        for (int i = 0; i < answers.size() ; i++) {
-            System.out.println( (i + 1) + " - " +answers.get(i).getAnswer());
+    public void printAnswer() {
+        for (int i = 0; i < answers.size(); i++) {
+            System.out.println((i + 1) + " - " + answers.get(i).getAnswer());
         }
     }
 

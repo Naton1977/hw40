@@ -2,9 +2,6 @@ package org.example;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Methods {
@@ -77,16 +74,16 @@ class PrintListOfQuizzes implements Action<Context> {
     }
 }
 
-class CreateQuiz implements Action<Context>{
+class CreateQuiz implements Action<Context> {
 
     @Override
     public void doIt(Context context) throws IOException {
-        QuizMapAdd quizMapAdd =  QuizMapAdd.getInstance();
+        QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
         quizMapAdd.addQuiz();
     }
 }
 
-class EditQuiz implements Action<Context>{
+class EditQuiz implements Action<Context> {
 
     @Override
     public void doIt(Context context) throws IOException {
@@ -96,11 +93,11 @@ class EditQuiz implements Action<Context>{
     }
 }
 
-class DeleteQuiz implements Action<Context>{
+class DeleteQuiz implements Action<Context> {
 
 
     @Override
-    public void doIt(Context context) throws FileNotFoundException {
+    public void doIt(Context context) throws IOException {
         QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
         quizMapAdd.deleteQuiz();
     }

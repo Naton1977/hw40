@@ -3,8 +3,6 @@ package org.example;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Scanner;
 
 public class AddQuiz {
@@ -37,7 +35,7 @@ public class AddQuiz {
 
             if (userUtils.size() == 1) {
                 UserAuthorization userAuthorization = new UserAuthorization();
-                menuLevel1_2 = new Menu("Вход пользователя",userAuthorization);
+                menuLevel1_2 = new Menu("Вход пользователя", userAuthorization);
                 menu.addSubMenu(menuLevel1_2);
             }
 
@@ -52,31 +50,31 @@ public class AddQuiz {
             menu.print();
 
             menu.action(quizAction());
-            if(exitTrue){
+            if (exitTrue) {
                 break;
             }
 
-            if (stepMenu1_2){
+            if (stepMenu1_2) {
 
-                    PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
-                    Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
-                    menuLevel1_2.addSubMenu(menu1_2Level2_1);
-
-
-                    CreateQuiz createQuiz = new CreateQuiz();
-                    Menu menu1_2Level2_2 = new Menu("Создать викторину", createQuiz);
+                PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
+                Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
+                menuLevel1_2.addSubMenu(menu1_2Level2_1);
 
 
-                    EditQuiz editQuiz = new EditQuiz();
-                    Menu menu1_2Level2_3 = new Menu("Редактировать викторину", editQuiz);
+                CreateQuiz createQuiz = new CreateQuiz();
+                Menu menu1_2Level2_2 = new Menu("Создать викторину", createQuiz);
 
-                    DeleteQuiz deleteQuiz = new DeleteQuiz();
-                    Menu menu1_2Level2_4 = new Menu("Удалить викторину", deleteQuiz);
 
-                    menuLevel1_2.addSubMenu(menu1_2Level2_2);
-                    menuLevel1_2.addSubMenu(menu1_2Level2_3);
-                    menuLevel1_2.addSubMenu(menu1_2Level2_4);
-                    do{
+                EditQuiz editQuiz = new EditQuiz();
+                Menu menu1_2Level2_3 = new Menu("Редактировать викторину", editQuiz);
+
+                DeleteQuiz deleteQuiz = new DeleteQuiz();
+                Menu menu1_2Level2_4 = new Menu("Удалить викторину", deleteQuiz);
+
+                menuLevel1_2.addSubMenu(menu1_2Level2_2);
+                menuLevel1_2.addSubMenu(menu1_2Level2_3);
+                menuLevel1_2.addSubMenu(menu1_2Level2_4);
+                do {
                     menuLevel1_2.print();
                     menuLevel1_2.action(quizAction());
                 } while (!"exit".equals(status));
@@ -110,13 +108,11 @@ public class AddQuiz {
     }
 
 
-
-
-    public int quizAction(){
+    public int quizAction() {
         do {
             System.out.println("exit -  выход");
             status = scanner.nextLine();
-            if("exit".equals(status)){
+            if ("exit".equals(status)) {
                 exitTrue = true;
                 break;
             }
