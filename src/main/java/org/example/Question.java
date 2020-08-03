@@ -45,6 +45,23 @@ public class Question implements Serializable {
         }
     }
 
+    public boolean corrAnswer(int numberQuestion){
+      if(answers.get(numberQuestion -1).getCorrectAnswer().equals(CorrectAnswer.YES)){
+          return true;
+      }
+      return false;
+    }
+
+    public int countCorrAnswer(){
+        int count = 0;
+        for (int i = 0; i < answers.size(); i++) {
+            if(answers.get(i).getCorrectAnswer().equals(CorrectAnswer.YES)){
+                count ++;
+            }
+        }
+        return count;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

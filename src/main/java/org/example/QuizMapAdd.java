@@ -8,6 +8,7 @@ public class QuizMapAdd {
     private String name;
     private static QuizMapAdd instance;
     Map<Quiz, List<Question>> quiz = new TreeMap<>();
+    Map<Quiz, List<UserResult>> resultQuizUser = new TreeMap<>();
     List<Question> mixedList = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private int count;
@@ -48,12 +49,17 @@ public class QuizMapAdd {
         if (file.exists()) {
             mixedList = readObjectMixedQuestion(fileName);
         }
+        String fileName2 = "ResultQuizUser.dat";
+        File file2 = new File(fileName2);
+        if (file2.exists()) {
+            resultQuizUser = readObjectResultUserQuiz(fileName2);
+        }
 
         Question question;
         System.out.println("Введите название викторины");
         name = scanner.nextLine();
         quiz.put(new Quiz(name), new ArrayList<>());
-
+        resultQuizUser.put(new Quiz(name), new ArrayList<>());
         do {
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
                 if (r.getKey().getName().equals(name)) {
@@ -101,6 +107,7 @@ public class QuizMapAdd {
         } while (true);
         saveObjectQuiz(quiz, "Quiz.dat");
         saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
+        saveObjectResultUserQuiz(resultQuizUser,"ResultQuizUser.dat");
     }
 
     public void printListQuiz() throws FileNotFoundException {
@@ -168,23 +175,27 @@ public class QuizMapAdd {
 
                 if (tapMenu1_2) {
                     Menu menuP2Level1_1 = new Menu("Показать список вопросов", context -> {
-                        for (int i = 0; i < questionList.size(); i++) {
-                            System.out.println((i + 1) + " - " + questionList.get(i).getQuestion());
+                        if(!"exit".equals(status)) {
+                            for (int i = 0; i < questionList.size(); i++) {
+                                System.out.println((i + 1) + " - " + questionList.get(i).getQuestion());
+                            }
                         }
                     });
                     Menu menuP2Level1_2 = new Menu("Удалить вопрос", context -> {
-                        System.out.println("Введите номер вопроса который нужно удалить");
-                        deleteNumber = scanner.nextLine();
-                        try {
-                            deleteNumberInt = Integer.parseInt(deleteNumber);
-                        } catch (Exception e) {
-                            System.out.println("Введите правильно номер вопроса");
-                        }
-                        for (int i = 0; i < questionList.size(); i++) {
-                            if (i == (deleteNumberInt - 1)) {
-                                Question qw = questionList.remove(i);
-                                mixedList.remove(qw);
-                                System.out.println("Вопрос удален");
+                        if(!"exit".equals(status)) {
+                            System.out.println("Введите номер вопроса который нужно удалить");
+                            deleteNumber = scanner.nextLine();
+                            try {
+                                deleteNumberInt = Integer.parseInt(deleteNumber);
+                            } catch (Exception e) {
+                                System.out.println("Введите правильно номер вопроса");
+                            }
+                            for (int i = 0; i < questionList.size(); i++) {
+                                if (i == (deleteNumberInt - 1)) {
+                                    Question qw = questionList.remove(i);
+                                    mixedList.remove(qw);
+                                    System.out.println("Вопрос удален");
+                                }
                             }
                         }
 
@@ -192,53 +203,22 @@ public class QuizMapAdd {
 
 
                     Menu menuP2Level1_3 = new Menu("Редактировать вопрос", context -> {
-                        Answer answer1 = null;
-                        System.out.println("Введите номер вопроса который нужно редактировать");
-                        editQuestion = scanner.nextLine();
-                        try {
-                            editQuestionInt = Integer.parseInt(editQuestion);
-                        } catch (Exception e) {
-                            System.out.println("Введите правильно номер вопроса");
-                        }
-                        for (int i = 0; i < questionList.size(); i++) {
-                            if (i == (editQuestionInt - 1)) {
-                                System.out.println("Введите новый вопрос");
-                                newQuestion = scanner.nextLine();
-                                mixedList.remove(questionList.get(i));
-                                questionList.get(i).setQuestion(newQuestion);
-                                questionList.get(i).deleteAnswers();
-                                do {
-                                    System.out.println("Введите вариант ответа");
-                                    System.out.println("exit - выход");
-                                    answer = scanner.nextLine();
-                                    if ("exit".equals(answer)) {
-                                        break;
-                                    }
-                                    System.out.println("1 - это правильный ответ");
-                                    System.out.println("2 - это не правильный ответ");
-                                    correctAnswer = scanner.nextLine();
-                                    if ("1".equals(correctAnswer)) {
-                                        answer1 = new Answer(name, answer, CorrectAnswer.YES);
-                                    }
-                                    if ("2".equals(correctAnswer)) {
-                                        answer1 = new Answer(name, answer, CorrectAnswer.NO);
-                                    }
-                                    questionList.get(i).addQuestion(answer1);
-                                    System.out.println("Ответ добавлен");
-                                } while (true);
-                                mixedList.add(questionList.get(i));
+                        if (!"exit".equals(status)) {
+                            Answer answer1 = null;
+                            System.out.println("Введите номер вопроса который нужно редактировать");
+                            editQuestion = scanner.nextLine();
+                            try {
+                                editQuestionInt = Integer.parseInt(editQuestion);
+                            } catch (Exception e) {
+                                System.out.println("Введите правильно номер вопроса");
                             }
-                        }
-                    });
-
-                    Menu menuP2Level1_4 = new Menu("Создать вопрос", context -> {
-                        Answer answer1 = null;
-                        if (questionList.size() < 20) {
-                            System.out.println("Введите новый вопрос");
-                            newQuestion = scanner.nextLine();
-                            questionList.add(new Question(name, newQuestion));
                             for (int i = 0; i < questionList.size(); i++) {
-                                if (questionList.get(i).getQuestion().equals(newQuestion)) {
+                                if (i == (editQuestionInt - 1)) {
+                                    System.out.println("Введите новый вопрос");
+                                    newQuestion = scanner.nextLine();
+                                    mixedList.remove(questionList.get(i));
+                                    questionList.get(i).setQuestion(newQuestion);
+                                    questionList.get(i).deleteAnswers();
                                     do {
                                         System.out.println("Введите вариант ответа");
                                         System.out.println("exit - выход");
@@ -261,8 +241,43 @@ public class QuizMapAdd {
                                     mixedList.add(questionList.get(i));
                                 }
                             }
-                        } else {
-                            System.out.println("В викторине может быть не более 20 вопросов");
+                        }
+                    });
+
+                    Menu menuP2Level1_4 = new Menu("Создать вопрос", context -> {
+                        if (!"exit".equals(status)) {
+                            Answer answer1 = null;
+                            if (questionList.size() < 20) {
+                                System.out.println("Введите новый вопрос");
+                                newQuestion = scanner.nextLine();
+                                questionList.add(new Question(name, newQuestion));
+                                for (int i = 0; i < questionList.size(); i++) {
+                                    if (questionList.get(i).getQuestion().equals(newQuestion)) {
+                                        do {
+                                            System.out.println("Введите вариант ответа");
+                                            System.out.println("exit - выход");
+                                            answer = scanner.nextLine();
+                                            if ("exit".equals(answer)) {
+                                                break;
+                                            }
+                                            System.out.println("1 - это правильный ответ");
+                                            System.out.println("2 - это не правильный ответ");
+                                            correctAnswer = scanner.nextLine();
+                                            if ("1".equals(correctAnswer)) {
+                                                answer1 = new Answer(name, answer, CorrectAnswer.YES);
+                                            }
+                                            if ("2".equals(correctAnswer)) {
+                                                answer1 = new Answer(name, answer, CorrectAnswer.NO);
+                                            }
+                                            questionList.get(i).addQuestion(answer1);
+                                            System.out.println("Ответ добавлен");
+                                        } while (true);
+                                        mixedList.add(questionList.get(i));
+                                    }
+                                }
+                            } else {
+                                System.out.println("В викторине может быть не более 20 вопросов");
+                            }
                         }
                     });
 
@@ -271,6 +286,7 @@ public class QuizMapAdd {
                     menu2.addSubMenu(menuP2Level1_2);
                     menu2.addSubMenu(menuP2Level1_3);
                     menu2.addSubMenu(menuP2Level1_4);
+
                     do {
                         menu2.print();
                         menu2.action(quizAction());
@@ -401,6 +417,24 @@ public class QuizMapAdd {
             e.printStackTrace();
         }
         return mixedQuestion;
+    }
+    private static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
+        Map<Quiz, List<UserResult>> resultQuizUser = null;
+        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
+            resultQuizUser = (Map<Quiz, List<UserResult>>) input.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return resultQuizUser;
+    }
+
+    private static void saveObjectResultUserQuiz(Map<Quiz, List<UserResult>> resultQuizUser, String fileName) throws FileNotFoundException {
+        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            output.writeObject(resultQuizUser);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }
