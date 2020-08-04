@@ -25,6 +25,7 @@ public class QuizMapAdd {
     private String editQuestion;
     private int editQuestionInt;
     private String newQuestion;
+    private boolean presentQuiz;
 
     private QuizMapAdd() {
 
@@ -53,6 +54,16 @@ public class QuizMapAdd {
         File file2 = new File(fileName2);
         if (file2.exists()) {
             resultQuizUser = readObjectResultUserQuiz(fileName2);
+        }
+
+        for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
+            if(r.getKey().getName().equals("Викторина смешанных вопросов")){
+                presentQuiz = true;
+                break;
+            }
+        }
+        if(!presentQuiz){
+            quiz.put(new Quiz("Викторина смешанных вопросов"), new ArrayList<>());
         }
 
         Question question;

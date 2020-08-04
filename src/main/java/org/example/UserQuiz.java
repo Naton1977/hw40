@@ -2,7 +2,7 @@ package org.example;
 
 import java.io.Serializable;
 
-public class UserQuiz implements Serializable {
+public class UserQuiz implements Serializable,Comparable<UserQuiz> {
     private String login;
     private String password;
     private String dateOfBirth;
@@ -44,5 +44,10 @@ public class UserQuiz implements Serializable {
                 ", password='" + password + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(UserQuiz o) {
+        return login.compareTo(o.login);
     }
 }

@@ -2,11 +2,11 @@ package org.example;
 
 import java.io.Serializable;
 
-public class ResultUserQuiz  implements Serializable {
+public class ResultUserQuiz  implements Serializable,Comparable<ResultUserQuiz> {
     private String quizName;
-    private String rightAnswer;
+    private int rightAnswer;
 
-    public ResultUserQuiz(String quizName, String rightAnswer) {
+    public ResultUserQuiz(String quizName, int rightAnswer) {
         this.quizName = quizName;
         this.rightAnswer = rightAnswer;
     }
@@ -19,11 +19,11 @@ public class ResultUserQuiz  implements Serializable {
         this.quizName = quizName;
     }
 
-    public String getRightAnswer() {
+    public int getRightAnswer() {
         return rightAnswer;
     }
 
-    public void setRightAnswer(String rightAnswer) {
+    public void setRightAnswer(int rightAnswer) {
         this.rightAnswer = rightAnswer;
     }
 
@@ -33,5 +33,10 @@ public class ResultUserQuiz  implements Serializable {
                 "quizName='" + quizName + '\'' +
                 ", rightAnswer='" + rightAnswer + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ResultUserQuiz o) {
+        return rightAnswer - o.rightAnswer;
     }
 }
