@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AddQuiz {
-    public static boolean stepMenu1_2;
+    public boolean stepMenu1_2;
     public static boolean exitTrue;
+    private String login;
+    private String password;
     private String status;
     private int statusInt;
-    public static List<UserUtil> userUtils = new ArrayList<>();
+
+
+    private List<UserUtil> userUtils = new ArrayList<>();
     Menu menuLevel1_2;
     Scanner scanner = new Scanner(System.in);
 
@@ -28,21 +32,47 @@ public class AddQuiz {
 
             Menu menuLevel1_1;
             if (userUtils.size() == 0) {
-                CreateUser createUser = new CreateUser();
-                menuLevel1_1 = new Menu("Зарегистрировать пользователя", createUser);
+                menuLevel1_1 = new Menu("Зарегистрировать пользователя", context -> {
+                    UserUtil userUtil = UserUtil.getInstance();
+                    System.out.println("Введите login");
+                    login = scanner.nextLine();
+                    System.out.println("Введите password");
+                    password = scanner.nextLine();
+                    userUtil.setLogin(login);
+                    userUtil.setPassword(password);
+                    userUtils.add(userUtil);
+                });
                 menu.addSubMenu(menuLevel1_1);
             }
 
             if (userUtils.size() == 1) {
-                UserAuthorization userAuthorization = new UserAuthorization();
-                menuLevel1_2 = new Menu("Вход пользователя", userAuthorization);
+                menuLevel1_2 = new Menu("Вход пользователя", context -> {
+                    if (!AddQuiz.exitTrue) {
+                        System.out.println("Введите login");
+                        login = scanner.nextLine();
+                        System.out.println("Введите password");
+                        password = scanner.nextLine();
+                        if (userUtils.get(0).getLogin().equals(login) && userUtils.get(0).getPassword().equals(password)) {
+                            stepMenu1_2 = true;
+                        } else {
+                            System.out.println("Введите правильно login или password");
+                        }
+                    }
+                });
                 menu.addSubMenu(menuLevel1_2);
             }
 
             if (userUtils.size() > 0) {
                 if (userUtils.get(0).getLogin().equals("Admin") && userUtils.get(0).getPassword().equals("Admin")) {
-                    ChangeLoginPassword changeLoginPassword = new ChangeLoginPassword();
-                    Menu menuLevel1_3 = new Menu("Изменить login и password", changeLoginPassword);
+                    Menu menuLevel1_3 = new Menu("Изменить login и password", context -> {
+                        System.out.println("Введите новый login");
+                        login = scanner.nextLine();
+                        System.out.println("Введите новый password");
+                        password = scanner.nextLine();
+                        userUtils.get(0).setLogin(login);
+                        userUtils.get(0).setPassword(password);
+                        System.out.println("Login и password успешно изменены");
+                    });
                     menu.addSubMenu(menuLevel1_3);
                 }
             }
@@ -56,20 +86,28 @@ public class AddQuiz {
 
             if (stepMenu1_2) {
 
-                PrintListOfQuizzes printListOfQuizzes = new PrintListOfQuizzes();
-                Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", printListOfQuizzes);
+                Menu menu1_2Level2_1 = new Menu("Посмотреть список всех викторин", context -> {
+                    QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+                    quizMapAdd.printListQuiz();
+                });
                 menuLevel1_2.addSubMenu(menu1_2Level2_1);
 
 
-                CreateQuiz createQuiz = new CreateQuiz();
-                Menu menu1_2Level2_2 = new Menu("Создать викторину", createQuiz);
+                Menu menu1_2Level2_2 = new Menu("Создать викторину", context -> {
+                    QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+                    quizMapAdd.addQuiz();
+                });
 
 
-                EditQuiz editQuiz = new EditQuiz();
-                Menu menu1_2Level2_3 = new Menu("Редактировать викторину", editQuiz);
+                Menu menu1_2Level2_3 = new Menu("Редактировать викторину", context -> {
+                    QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+                    quizMapAdd.editQuiz();
+                });
 
-                DeleteQuiz deleteQuiz = new DeleteQuiz();
-                Menu menu1_2Level2_4 = new Menu("Удалить викторину", deleteQuiz);
+                Menu menu1_2Level2_4 = new Menu("Удалить викторину", context -> {
+                    QuizMapAdd quizMapAdd = QuizMapAdd.getInstance();
+                    quizMapAdd.deleteQuiz();
+                });
 
                 menuLevel1_2.addSubMenu(menu1_2Level2_2);
                 menuLevel1_2.addSubMenu(menu1_2Level2_3);
@@ -125,5 +163,4 @@ public class AddQuiz {
         } while (true);
         return statusInt;
     }
-
 }

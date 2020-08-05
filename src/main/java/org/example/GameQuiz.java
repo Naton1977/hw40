@@ -35,7 +35,6 @@ public class GameQuiz implements Serializable {
                 userQuizResult = readObjectUserQuizResult(fileName1);
             }
 
-
             do {
                 System.out.println("Введите логин");
                 System.out.println("exit - выход");
@@ -67,22 +66,27 @@ public class GameQuiz implements Serializable {
 
         menu.addSubMenu(menuP_1);
         menu.addSubMenu(menuP_2);
-        menu.print();
-        menu.action(action());
+        do {
+            menu.print();
+            menu.action(action());
+        } while (!tapMenuP_2);
 
         if (tapMenuP_2) {
-
-            GameUser gameUser = new GameUser();
-            Menu menuP1_2Lev1P1 = new Menu("Стартовать викторину по теме", gameUser);
+            Menu menuP1_2Lev1P1 = new Menu("Стартовать викторину по теме", new GameUser());
 
 
-            GameMixedQuiz gameMixedQuiz = new GameMixedQuiz();
-            Menu menuP1_2Lev1P2 = new Menu("Стартовать смешанную викторину",gameMixedQuiz);
+            Menu menuP1_2Lev1P2 = new Menu("Стартовать смешанную викторину", new GameMixedQuiz());
 
 
             Menu menuP1_2Lev1P3 = new Menu("Посмотреть результаты своих прошлых викторин", context -> {
-                for(Map.Entry<UserQuiz, List<ResultUserQuiz>> rr : userQuizResult.entrySet()){
-                    if(rr.getKey().getLogin().equals(staticLoginUser)){
+                String fileName3 = "UserQuizResult.dat";
+                File file3 = new File(fileName3);
+                if (file3.exists()) {
+                    userQuizResult = readObjectUserQuizResult(fileName3);
+                }
+
+                for (Map.Entry<UserQuiz, List<ResultUserQuiz>> rr : userQuizResult.entrySet()) {
+                    if (rr.getKey().getLogin().equals(staticLoginUser)) {
                         List<ResultUserQuiz> lr = rr.getValue();
                         for (int i = 0; i < lr.size(); i++) {
                             System.out.println("Викторина : " + lr.get(i).getQuizName());
@@ -92,14 +96,13 @@ public class GameQuiz implements Serializable {
                 }
             });
 
-            ViewTop viewTop = new ViewTop();
-            Menu menuP1_2Lev1P4 = new Menu("Посмотреть Топ - 20 по викторинам", viewTop);
+            Menu menuP1_2Lev1P4 = new Menu("Посмотреть Топ - 20 по викторинам", new ViewTop());
 
             Menu menuP1_2Lev1P5 = new Menu("Изменить настройки", context -> {
                 tapMenuP1_2Lev1P5 = true;
             });
 
-            if(tapMenuP1_2Lev1P5) {
+            if (tapMenuP1_2Lev1P5) {
 
                 Menu menuP1_2Lev1P5_L1P1 = new Menu("Изменить пароль", context -> {
                     System.out.println("Введите новый пароль");
@@ -128,7 +131,7 @@ public class GameQuiz implements Serializable {
                 do {
                     menuP1_2Lev1P5.print();
                     menuP1_2Lev1P5.action(action());
-                } while (!exitTrue) ;
+                } while (!exitTrue);
 
             }
 
@@ -138,7 +141,11 @@ public class GameQuiz implements Serializable {
             menuP_2.addSubMenu(menuP1_2Lev1P4);
             do {
                 menuP_2.print();
-                menuP_2.action(action());
+                int action = action();
+                if (exitTrue) {
+                    break;
+                }
+                menuP_2.action(action);
             } while (!exitTrue);
         }
 
