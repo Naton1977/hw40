@@ -13,7 +13,6 @@ public class UserUtil implements Serializable {
 
 
     public static UserUtil getInstance() {
-        Scanner scanner = new Scanner(System.in);
         if (instance == null) {
             instance = new UserUtil();
         }

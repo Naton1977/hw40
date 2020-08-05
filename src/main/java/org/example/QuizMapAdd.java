@@ -459,7 +459,7 @@ public class QuizMapAdd {
         return statusInt;
     }
 
-    private static void saveObjectMixedQuestion(List<Question> mixedQuestion, String fileName) throws FileNotFoundException {
+    static void saveObjectMixedQuestion(List<Question> mixedQuestion, String fileName) throws FileNotFoundException {
         try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
             output.writeObject(mixedQuestion);
         } catch (IOException exception) {
@@ -467,7 +467,7 @@ public class QuizMapAdd {
         }
     }
 
-    private static List<Question> readObjectMixedQuestion(String fileName) throws IOException {
+    static List<Question> readObjectMixedQuestion(String fileName) throws IOException {
         List<Question> mixedQuestion = null;
         try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
             mixedQuestion = (List<Question>) input.readObject();
@@ -477,7 +477,7 @@ public class QuizMapAdd {
         return mixedQuestion;
     }
 
-    private static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
+    static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
         Map<Quiz, List<UserResult>> resultQuizUser = null;
         try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
             resultQuizUser = (Map<Quiz, List<UserResult>>) input.readObject();
@@ -488,7 +488,7 @@ public class QuizMapAdd {
         return resultQuizUser;
     }
 
-    private static void saveObjectResultUserQuiz(Map<Quiz, List<UserResult>> resultQuizUser, String fileName) throws FileNotFoundException {
+    static void saveObjectResultUserQuiz(Map<Quiz, List<UserResult>> resultQuizUser, String fileName) throws FileNotFoundException {
         try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
             output.writeObject(resultQuizUser);
         } catch (IOException exception) {

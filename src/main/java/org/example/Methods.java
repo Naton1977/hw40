@@ -44,7 +44,7 @@ class GameUser implements Action<Context> {
         String fileName2 = "ResultQuizUser.dat";
         File file2 = new File(fileName2);
         if (file2.exists()) {
-            resultQuizUser = readObjectResultUserQuiz(fileName2);
+            resultQuizUser = QuizMapAdd.readObjectResultUserQuiz(fileName2);
         }
 
         String fileName3 = "UserQuizResult.dat";
@@ -175,42 +175,13 @@ class GameUser implements Action<Context> {
             }
             count = 1;
         }
-        saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
+        QuizMapAdd.saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
         saveObjectUserQuizResult(userQuizResult, "UserQuizResult.dat");
 
     }
 
-//    private static Map<Quiz, List<Question>> readObjectQuiz(String fileName) throws FileNotFoundException {
-//        Map<Quiz, List<Question>> quiz = null;
-//        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-//            quiz = (Map<Quiz, List<Question>>) input.readObject();
-//
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return quiz;
-//    }
 
-    private static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
-        Map<Quiz, List<UserResult>> resultQuizUser = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            resultQuizUser = (Map<Quiz, List<UserResult>>) input.readObject();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return resultQuizUser;
-    }
-
-    private static void saveObjectResultUserQuiz(Map<Quiz, List<UserResult>> resultQuizUser, String fileName) throws FileNotFoundException {
-        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            output.writeObject(resultQuizUser);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private static Map<UserQuiz, List<ResultUserQuiz>> readObjectUserQuizResult(String fileName) throws FileNotFoundException {
+    static Map<UserQuiz, List<ResultUserQuiz>> readObjectUserQuizResult(String fileName) throws FileNotFoundException {
         Map<UserQuiz, List<ResultUserQuiz>> userQuizResult = null;
         try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
             userQuizResult = (Map<UserQuiz, List<ResultUserQuiz>>) input.readObject();
@@ -221,7 +192,7 @@ class GameUser implements Action<Context> {
         return userQuizResult;
     }
 
-    private static void saveObjectUserQuizResult(Map<UserQuiz, List<ResultUserQuiz>> userQuizResult, String fileName) throws FileNotFoundException {
+    static void saveObjectUserQuizResult(Map<UserQuiz, List<ResultUserQuiz>> userQuizResult, String fileName) throws FileNotFoundException {
         try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
             output.writeObject(userQuizResult);
         } catch (IOException exception) {
@@ -257,19 +228,19 @@ class GameMixedQuiz implements Action<Context> {
         String fileName2 = "ResultQuizUser.dat";
         File file2 = new File(fileName2);
         if (file2.exists()) {
-            resultQuizUser = readObjectResultUserQuiz(fileName2);
+            resultQuizUser = QuizMapAdd.readObjectResultUserQuiz(fileName2);
         }
 
         String fileName3 = "UserQuizResult.dat";
         File file3 = new File(fileName3);
         if (file3.exists()) {
-            userQuizResult = readObjectUserQuizResult(fileName3);
+            userQuizResult = GameUser.readObjectUserQuizResult(fileName3);
         }
 
         String fileName = "MixedQuestion.dat";
         File file = new File(fileName);
         if (file.exists()) {
-            mixedList = readObjectMixedQuestion(fileName);
+            mixedList = QuizMapAdd.readObjectMixedQuestion(fileName);
         }
 
         System.out.println(quizName);
@@ -359,53 +330,6 @@ class GameMixedQuiz implements Action<Context> {
 
     }
 
-    private static List<Question> readObjectMixedQuestion(String fileName) throws IOException {
-        List<Question> mixedQuestion = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            mixedQuestion = (List<Question>) input.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return mixedQuestion;
-    }
-
-    private static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
-        Map<Quiz, List<UserResult>> resultQuizUser = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            resultQuizUser = (Map<Quiz, List<UserResult>>) input.readObject();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return resultQuizUser;
-    }
-
-    private static void saveObjectResultUserQuiz(Map<Quiz, List<UserResult>> resultQuizUser, String fileName) throws FileNotFoundException {
-        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            output.writeObject(resultQuizUser);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private static Map<UserQuiz, List<ResultUserQuiz>> readObjectUserQuizResult(String fileName) throws FileNotFoundException {
-        Map<UserQuiz, List<ResultUserQuiz>> userQuizResult = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            userQuizResult = (Map<UserQuiz, List<ResultUserQuiz>>) input.readObject();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return userQuizResult;
-    }
-
-    private static void saveObjectUserQuizResult(Map<UserQuiz, List<ResultUserQuiz>> userQuizResult, String fileName) throws FileNotFoundException {
-        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            output.writeObject(userQuizResult);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
 }
 
 class ViewTop implements Action<Context> {
@@ -421,7 +345,7 @@ class ViewTop implements Action<Context> {
         String fileName2 = "ResultQuizUser.dat";
         File file2 = new File(fileName2);
         if (file2.exists()) {
-            resultQuizUser = readObjectResultUserQuiz(fileName2);
+            resultQuizUser = QuizMapAdd.readObjectResultUserQuiz(fileName2);
         }
         int count = 1;
         for (Map.Entry<Quiz, List<UserResult>> rr : resultQuizUser.entrySet()) {
@@ -459,16 +383,5 @@ class ViewTop implements Action<Context> {
                 }
             }
         }
-    }
-
-    private static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
-        Map<Quiz, List<UserResult>> resultQuizUser = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            resultQuizUser = (Map<Quiz, List<UserResult>>) input.readObject();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return resultQuizUser;
     }
 }
