@@ -174,6 +174,7 @@ class GameUser implements Action<Context> {
                 }
             }
             count = 1;
+            quizCorrectAnswer = 0;
         }
         QuizMapAdd.saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
         saveObjectUserQuizResult(userQuizResult, "UserQuizResult.dat");
@@ -244,11 +245,13 @@ class GameMixedQuiz implements Action<Context> {
         }
 
         System.out.println(quizName);
+        int count  = 1;
         System.out.println("Правильных ответов может быть несколько");
-        for (int i = 0; i < mixedList.size(); i++) {
-            num = random.nextInt(mixedList.size());
+        for (int i = 0; i < mixedList.size();) {
+            int rnd = mixedList.size();
+            num = random.nextInt(rnd);
             System.out.println("exit - выход");
-            System.out.println("Вопрос " + "№ " + (i + 1) + " " + mixedList.get(num).getQuestion());
+            System.out.println("Вопрос " + "№ " + (count) + " " + mixedList.get(num).getQuestion());
             mixedList.get(num).printAnswer();
             do {
                 do {
@@ -297,9 +300,10 @@ class GameMixedQuiz implements Action<Context> {
                 break;
             }
             mixedList.remove(num);
-            if(i == 19){
+            if (count == 20) {
                 break;
             }
+            count++;
         }
         System.out.println("Число правильных ответов" + " - " + quizCorrectAnswer);
         for (Map.Entry<Quiz, List<UserResult>> resUs : resultQuizUser.entrySet()) {
@@ -327,7 +331,9 @@ class GameMixedQuiz implements Action<Context> {
             }
         }
 
-
+        quizCorrectAnswer = 0;
+        GameUser.saveObjectUserQuizResult(userQuizResult,"UserQuizResult.dat");
+        QuizMapAdd.saveObjectResultUserQuiz(resultQuizUser,"ResultQuizUser.dat" );
     }
 
 }
@@ -377,7 +383,7 @@ class ViewTop implements Action<Context> {
                     System.out.println("Пользователь : " + ur.get(i).getUserLogin());
                     System.out.println("Число правильных ответов : " + ur.get(i).getCountCorrectAnswer());
                     System.out.println("Место в таблице : " + (i + 1));
-                    if(i == 19){
+                    if (i == 19) {
                         break;
                     }
                 }
