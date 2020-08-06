@@ -9,10 +9,9 @@ public class QuizMapAdd {
     private static QuizMapAdd instance;
     Map<Quiz, List<Question>> quiz = new TreeMap<>();
     Map<Quiz, List<UserResult>> resultQuizUser = new TreeMap<>();
-    List<Question> mixedList = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
     private int count;
-    private String question;
+    private String questionQuiz;
     private String status;
     private String answer;
     private String correctAnswer;
@@ -25,8 +24,8 @@ public class QuizMapAdd {
     private String editQuestion;
     private int editQuestionInt;
     private String newQuestion;
-    private boolean presentQuiz;
-    private String deleteName;
+    private boolean quizPresent;
+
 
     private QuizMapAdd() {
 
@@ -46,26 +45,21 @@ public class QuizMapAdd {
             quiz = readObjectQuiz(fileName1);
         }
 
-        String fileName = "MixedQuestion.dat";
-        File file = new File(fileName);
-        if (file.exists()) {
-            mixedList = readObjectMixedQuestion(fileName);
-        }
         String fileName2 = "ResultQuizUser.dat";
         File file2 = new File(fileName2);
         if (file2.exists()) {
             resultQuizUser = readObjectResultUserQuiz(fileName2);
         }
 
-        for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-            if (r.getKey().getName().equals("Викторина смешанных вопросов")) {
-                presentQuiz = true;
-                break;
+        for(Map.Entry<Quiz, List<UserResult>>  ru: resultQuizUser.entrySet()){
+            if(ru.getKey().getName().equals("Викторина смешанных вопросов")){
+                quizPresent = true;
             }
         }
-        if (!presentQuiz) {
-            quiz.put(new Quiz("Викторина смешанных вопросов"), new ArrayList<>());
+        if(!quizPresent){
+            resultQuizUser.put(new Quiz("Викторина смешанных вопросов"), new ArrayList<>());
         }
+
 
         Question question;
         System.out.println("Введите название викторины");
@@ -80,14 +74,18 @@ public class QuizMapAdd {
                         count = r.getValue().size();
                     }
                 }
+                if((count + 1) > 20){
+                    System.out.println("В викторине может быть не более 20 вопросов");
+                    break;
+                }
                 Answer answer = null;
                 System.out.println("Введите вопрос" + " " + (count + 1));
                 System.out.println("exit - выход");
-                this.question = scanner.nextLine();
-                if ("exit".equals(this.question)) {
+                questionQuiz = scanner.nextLine();
+                if ("exit".equals(questionQuiz)) {
                     break;
                 }
-                question = new Question(name, this.question);
+                question = new Question(name, questionQuiz);
                 do {
                     System.out.println("Введите вариант ответа");
                     System.out.println("exit -  выход");
@@ -109,20 +107,14 @@ public class QuizMapAdd {
                     } while (!"1".equals(correctAnswer) && !"2".equals(correctAnswer));
                     question.addQuestion(answer);
                 } while (true);
-                mixedList.add(question);
 
                 for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
                     if (r.getKey().getName().equals(name)) {
-                        if (r.getValue().size() <= 20) {
                             r.getValue().add(question);
-                        } else {
-                            System.out.println("В викторине должно быть не более 20 вопросов");
-                        }
                     }
                 }
             } while (true);
             saveObjectQuiz(quiz, "Quiz.dat");
-            saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
             saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
         }
     }
@@ -135,10 +127,8 @@ public class QuizMapAdd {
         }
         int count = 1;
         for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-            if (!r.getKey().getName().equals("Викторина смешанных вопросов")) {
                 System.out.println(count + " - " + r.getKey().getName());
                 count++;
-            }
         }
     }
 
@@ -147,11 +137,6 @@ public class QuizMapAdd {
         File file1 = new File(fileName1);
         if (file1.exists()) {
             quiz = readObjectQuiz(fileName1);
-        }
-        String fileName = "MixedQuestion.dat";
-        File file = new File(fileName);
-        if (file.exists()) {
-            mixedList = readObjectMixedQuestion(fileName);
         }
 
         printListQuiz();
@@ -168,7 +153,6 @@ public class QuizMapAdd {
 
         int count = 1;
         for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-            if (!r.getKey().getName().equals("Викторина смешанных вопросов")) {
                 if (deleteNumberInt == count) {
                     name = r.getKey().getName();
                     List<Question> questionList = r.getValue();
@@ -191,11 +175,7 @@ public class QuizMapAdd {
                         for (int i = 0; i < questionList.size(); i++) {
                             questionList.get(i).setTheme(newName);
                         }
-                        for (int i = 0; i < mixedList.size() ; i++) {
-                            if(mixedList.get(i).getTheme().equals(name)){
-                                mixedList.get(i).setTheme(newName);
-                            }
-                        }
+
                         System.out.println("Название викторины изменено");
                     });
                     Menu menu2 = new Menu("Редактировать вопросы викторины", context -> {
@@ -226,13 +206,7 @@ public class QuizMapAdd {
                                 }
                                 for (int i = 0; i < questionList.size(); i++) {
                                     if (i == (deleteNumberInt - 1)) {
-                                        Question qw = questionList.remove(i);
-                                        for (int m = 0; m < mixedList.size(); m++) {
-                                            if (mixedList.get(m).getQuestion().equals(qw.getQuestion())) {
-                                                mixedList.remove(m);
-                                            }
-                                        }
-
+                                        questionList.remove(i);
                                         System.out.println("Вопрос удален");
                                     }
                                 }
@@ -253,12 +227,6 @@ public class QuizMapAdd {
                                 }
                                 for (int i = 0; i < questionList.size(); i++) {
                                     if (i == (editQuestionInt - 1)) {
-                                        String question = questionList.get(i).getQuestion();
-                                        for (int j = 0; j < mixedList.size(); j++) {
-                                            if(mixedList.get(j).getQuestion().equals(question)){
-                                                mixedList.remove(j);
-                                            }
-                                        }
                                         System.out.println("Введите новый вопрос");
                                         newQuestion = scanner.nextLine();
                                         questionList.get(i).setQuestion(newQuestion);
@@ -282,7 +250,6 @@ public class QuizMapAdd {
                                             questionList.get(i).addQuestion(answer1);
                                             System.out.println("Ответ добавлен");
                                         } while (true);
-                                        mixedList.add(questionList.get(i));
                                     }
                                 }
                             }
@@ -316,7 +283,6 @@ public class QuizMapAdd {
                                                 questionList.get(i).addQuestion(answer1);
                                                 System.out.println("Ответ добавлен");
                                             } while (true);
-                                            mixedList.add(questionList.get(i));
                                         }
                                     }
                                 } else {
@@ -339,10 +305,8 @@ public class QuizMapAdd {
                 }
                 count++;
             }
-        }
 
         saveObjectQuiz(quiz, "Quiz.dat");
-        saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
 
     }
 
@@ -352,11 +316,6 @@ public class QuizMapAdd {
         File file1 = new File(fileName1);
         if (file1.exists()) {
             quiz = readObjectQuiz(fileName1);
-        }
-        String fileName = "MixedQuestion.dat";
-        File file = new File(fileName);
-        if (file.exists()) {
-            mixedList = readObjectMixedQuestion(fileName);
         }
         String fileName2 = "ResultQuizUser.dat";
         File file2 = new File(fileName2);
@@ -380,19 +339,11 @@ public class QuizMapAdd {
 
         int count = 1;
         for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-            if (!r.getKey().getName().equals("Викторина смешанных вопросов")) {
                 if (deleteNumberInt == count) {
-                    deleteName = r.getKey().getName();
-                    quiz1 = r.getKey();
-                    for (int i = 0; i < mixedList.size(); i++) {
-                        if (mixedList.get(i).getTheme().equals(deleteName)) {
-                            mixedList.remove(i);
-                        }
-                    }
                     deleteTrue = true;
                 }
                 count++;
-            }
+
         }
         if (deleteTrue) {
             quiz.remove(quiz1);
@@ -403,25 +354,10 @@ public class QuizMapAdd {
             System.out.println("Викторины под таким номером нет");
         }
         saveObjectQuiz(quiz, "Quiz.dat");
-        saveObjectMixedQuestion(mixedList, "MixedQuestion.dat");
         saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
 
     }
 
-    public void printMixedList() throws IOException {
-        String fileName = "MixedQuestion.dat";
-        File file = new File(fileName);
-        if (file.exists()) {
-            mixedList = readObjectMixedQuestion(fileName);
-        }
-
-        for (int i = 0; i < mixedList.size(); i++) {
-            System.out.println(mixedList.get(i).getTheme());
-            System.out.println(mixedList.get(i).getQuestion());
-            mixedList.get(i).printAnswer();
-
-        }
-    }
 
      static void saveObjectQuiz(Map<Quiz, List<Question>> question, String fileName) throws FileNotFoundException {
         try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
@@ -459,23 +395,6 @@ public class QuizMapAdd {
         return statusInt;
     }
 
-    static void saveObjectMixedQuestion(List<Question> mixedQuestion, String fileName) throws FileNotFoundException {
-        try (ObjectOutput output = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            output.writeObject(mixedQuestion);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    static List<Question> readObjectMixedQuestion(String fileName) throws IOException {
-        List<Question> mixedQuestion = null;
-        try (ObjectInput input = new ObjectInputStream(new FileInputStream(fileName))) {
-            mixedQuestion = (List<Question>) input.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return mixedQuestion;
-    }
 
     static Map<Quiz, List<UserResult>> readObjectResultUserQuiz(String fileName) throws FileNotFoundException {
         Map<Quiz, List<UserResult>> resultQuizUser = null;

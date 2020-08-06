@@ -55,10 +55,9 @@ class GameUser implements Action<Context> {
 
         if (!"exit".equals(status)) {
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-                if (!r.getKey().getName().equals("Викторина смешанных вопросов")) {
                     System.out.println(count + " - " + r.getKey().getName());
                     count++;
-                }
+
             }
             count = 1;
             System.out.println("Выберите викторину из списка");
@@ -81,7 +80,6 @@ class GameUser implements Action<Context> {
 
         if (!exit) {
             for (Map.Entry<Quiz, List<Question>> r : quiz.entrySet()) {
-                if (!r.getKey().getName().equals("Викторина смешанных вопросов")) {
                     if (quizNumber == count) {
                         quizName = r.getKey().getName();
                         List<Question> qw = r.getValue();
@@ -151,12 +149,11 @@ class GameUser implements Action<Context> {
                                         set1.remove(i);
                                     }
                                 }
-                                resUs.getValue().add(new UserResult(GameQuiz.staticLoginUser, quizCorrectAnswer));
+                                set1.add(new UserResult(GameQuiz.staticLoginUser, quizCorrectAnswer));
                                 System.out.println("Викторина : " + resUs.getKey().getName());
-                                List<UserResult> set = resUs.getValue();
-                                Collections.sort(set);
-                                for (int i = 0; i < set.size(); i++) {
-                                    if (set.get(i).getUserLogin().equals(GameQuiz.staticLoginUser)) {
+                                Collections.sort(set1);
+                                for (int i = 0; i < set1.size(); i++) {
+                                    if (set1.get(i).getUserLogin().equals(GameQuiz.staticLoginUser)) {
                                         System.out.println("Ваше место : " + (i + 1));
                                     }
                                 }
@@ -164,14 +161,13 @@ class GameUser implements Action<Context> {
                         }
                         for (Map.Entry<UserQuiz, List<ResultUserQuiz>> rr : userQuizResult.entrySet()) {
                             if (rr.getKey().getLogin().equals(GameQuiz.staticLoginUser)) {
-                                rr.getValue().add(new ResultUserQuiz(quizName, quizCorrectAnswer));
+                                List<ResultUserQuiz> lr = rr.getValue();
+                                lr.add(new ResultUserQuiz(quizName, quizCorrectAnswer));
                             }
                         }
-
-
                     }
                     count++;
-                }
+
             }
             count = 1;
             quizCorrectAnswer = 0;
@@ -203,7 +199,7 @@ class GameUser implements Action<Context> {
 }
 
 class GameMixedQuiz implements Action<Context> {
-    private int num;
+    private int countQuizRandom;
     private String quizName = "Викторина смешанных вопросов";
     private String corrAnsw;
     private boolean exit;
@@ -213,14 +209,16 @@ class GameMixedQuiz implements Action<Context> {
     private int quizCorrectAnswer;
     private int countWrongAnswer;
     private boolean corrAnswBool;
+    private int count2 = 0;
 
 
     Map<Quiz, List<UserResult>> resultQuizUser = new TreeMap<>();
     Map<UserQuiz, List<ResultUserQuiz>> userQuizResult = new TreeMap<>();
-    List<Question> mixedList = new ArrayList<>();
+    Map<Quiz, List<Question>> quiz = new TreeMap<>();
 
 
-    Random random = new Random();
+    Random random1 = new Random();
+    Random random2 = new Random();
     Scanner scanner = new Scanner(System.in);
 
     @Override
@@ -238,73 +236,120 @@ class GameMixedQuiz implements Action<Context> {
             userQuizResult = GameUser.readObjectUserQuizResult(fileName3);
         }
 
-        String fileName = "MixedQuestion.dat";
-        File file = new File(fileName);
-        if (file.exists()) {
-            mixedList = QuizMapAdd.readObjectMixedQuestion(fileName);
+
+        String fileName1 = "Quiz.dat";
+        File file1 = new File(fileName1);
+        if (file1.exists()) {
+            quiz = QuizMapAdd.readObjectQuiz(fileName1);
         }
 
+
         System.out.println(quizName);
-        int count  = 1;
+        int countQuiz = 0;
         System.out.println("Правильных ответов может быть несколько");
-        for (int i = 0; i < mixedList.size();) {
-            int rnd = mixedList.size();
-            num = random.nextInt(rnd);
-            System.out.println("exit - выход");
-            System.out.println("Вопрос " + "№ " + (count) + " " + mixedList.get(num).getQuestion());
-            mixedList.get(num).printAnswer();
-            do {
-                do {
-                    System.out.println("Введите номер правильного ответа");
-                    System.out.println("Введите - end для перехода к следующему вопросу");
-                    corrAnsw = scanner.nextLine();
+        for (Map.Entry<Quiz, List<Question>> ql : quiz.entrySet()) {
+            countQuiz++;
+        }
+
+        do {
+            countQuizRandom = random1.nextInt(countQuiz);
+            int count1 = 0;
+            for (Map.Entry<Quiz, List<Question>> ql : quiz.entrySet()) {
+                if (count1 == countQuizRandom) {
+                    List<Question> q = ql.getValue();
+                    for (int j = 0; j < q.size(); ) {
+                        int rnd = q.size();
+                        int numQuestion = random2.nextInt(rnd);
+                        System.out.println("exit - выход");
+                        System.out.println("Вопрос " + "№ " + (count2 + 1) + " " + q.get(numQuestion).getQuestion());
+                        count2++;
+                        q.get(numQuestion).printAnswer();
+                        do {
+                            do {
+                                System.out.println("Введите номер правильного ответа");
+                                System.out.println("Введите - end для перехода к следующему вопросу");
+                                corrAnsw = scanner.nextLine();
+                                if ("exit".equals(corrAnsw)) {
+                                    exit = true;
+                                    break;
+                                }
+                                if ("end".equals(corrAnsw)) {
+                                    break;
+                                }
+                                try {
+                                    corrAnswInt = Integer.parseInt(corrAnsw);
+                                    break;
+                                } catch (Exception e) {
+                                    System.out.println("Введите правильно число");
+                                }
+                            } while (true);
+                            if ("end".equals(corrAnsw)) {
+                                resultAnswer = q.get(numQuestion).countCorrAnswer();
+                                if (resultAnswer == countCorrectAnswer) {
+                                    System.out.println("Ответ правильный");
+                                    quizCorrectAnswer++;
+                                    countCorrectAnswer = 0;
+                                    countWrongAnswer = 0;
+                                    q.remove(numQuestion);
+                                }
+                                break;
+                            }
+                            if (!exit) {
+                                corrAnswBool = q.get(numQuestion).corrAnswer(corrAnswInt);
+                                if (corrAnswBool) {
+                                    countCorrectAnswer++;
+                                } else {
+                                    countWrongAnswer++;
+                                }
+
+                            }
+                            if ("exit".equals(corrAnsw)) {
+                                break;
+                            }
+                        } while (true);
+
+
+                        if ("exit".equals(corrAnsw)) {
+                            break;
+                        }
+
+                        if (count2 == 20) {
+                            break;
+                        }
+                        if ("end".equals(corrAnsw)) {
+                            break;
+                        }
+
+                    }
+
+                    if (count2 == 20) {
+                        break;
+                    }
+
                     if ("exit".equals(corrAnsw)) {
-                        exit = true;
                         break;
                     }
-                    if ("end".equals(corrAnsw)) {
-                        break;
-                    }
-                    try {
-                        corrAnswInt = Integer.parseInt(corrAnsw);
-                        break;
-                    } catch (Exception e) {
-                        System.out.println("Введите правильно число");
-                    }
-                } while (true);
+                }
+
+                if (count2 == 20) {
+                    break;
+                }
                 if ("end".equals(corrAnsw)) {
-                    resultAnswer = mixedList.get(i).countCorrAnswer();
-                    if (resultAnswer == countCorrectAnswer) {
-                        System.out.println("Ответ правильный");
-                        quizCorrectAnswer++;
-                        countCorrectAnswer = 0;
-                        countWrongAnswer = 0;
-                    }
+                    corrAnsw = null;
                     break;
                 }
-                if (!exit) {
-                    corrAnswBool = mixedList.get(i).corrAnswer(corrAnswInt);
-                    if (corrAnswBool) {
-                        countCorrectAnswer++;
-                    } else {
-                        countWrongAnswer++;
-                    }
-
-                }
-                if ("exit".equals(corrAnsw)) {
-                    break;
-                }
-            } while (true);
-
+                count1++;
+            }
+            if (count2 == 20) {
+                break;
+            }
             if ("exit".equals(corrAnsw)) {
                 break;
             }
-            mixedList.remove(num);
-            if (count == 20) {
-                break;
-            }
-            count++;
-        }
+
+        } while (true);
+
+
         System.out.println("Число правильных ответов" + " - " + quizCorrectAnswer);
         for (Map.Entry<Quiz, List<UserResult>> resUs : resultQuizUser.entrySet()) {
             if (resUs.getKey().getName().equals(quizName)) {
@@ -314,7 +359,7 @@ class GameMixedQuiz implements Action<Context> {
                         set1.remove(i);
                     }
                 }
-                resUs.getValue().add(new UserResult(GameQuiz.staticLoginUser, quizCorrectAnswer));
+                set1.add(new UserResult(GameQuiz.staticLoginUser, quizCorrectAnswer));
                 System.out.println("Викторина : " + resUs.getKey().getName());
                 List<UserResult> set = resUs.getValue();
                 Collections.sort(set);
@@ -327,13 +372,14 @@ class GameMixedQuiz implements Action<Context> {
         }
         for (Map.Entry<UserQuiz, List<ResultUserQuiz>> rr : userQuizResult.entrySet()) {
             if (rr.getKey().getLogin().equals(GameQuiz.staticLoginUser)) {
-                rr.getValue().add(new ResultUserQuiz(quizName, quizCorrectAnswer));
+                List<ResultUserQuiz> lr = rr.getValue();
+                lr.add(new ResultUserQuiz(quizName, quizCorrectAnswer));
             }
         }
 
         quizCorrectAnswer = 0;
-        GameUser.saveObjectUserQuizResult(userQuizResult,"UserQuizResult.dat");
-        QuizMapAdd.saveObjectResultUserQuiz(resultQuizUser,"ResultQuizUser.dat" );
+        GameUser.saveObjectUserQuizResult(userQuizResult, "UserQuizResult.dat");
+        QuizMapAdd.saveObjectResultUserQuiz(resultQuizUser, "ResultQuizUser.dat");
     }
 
 }
@@ -374,11 +420,12 @@ class ViewTop implements Action<Context> {
                 System.out.println("Введите правильно число");
             }
         } while (true);
-
+        int count1 = 1;
         for (Map.Entry<Quiz, List<UserResult>> rr : resultQuizUser.entrySet()) {
-            if (count == quizNumber) {
+            if (count1 == quizNumber) {
                 System.out.println("Викторина : " + rr.getKey().getName());
                 List<UserResult> ur = rr.getValue();
+                Collections.sort(ur);
                 for (int i = 0; i < ur.size(); i++) {
                     System.out.println("Пользователь : " + ur.get(i).getUserLogin());
                     System.out.println("Число правильных ответов : " + ur.get(i).getCountCorrectAnswer());
@@ -388,6 +435,7 @@ class ViewTop implements Action<Context> {
                     }
                 }
             }
+            count1++;
         }
     }
 }

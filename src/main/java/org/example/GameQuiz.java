@@ -7,6 +7,7 @@ public class GameQuiz implements Serializable {
     Scanner scanner = new Scanner(System.in);
     List<UserQuiz> listUserQuiz = new ArrayList<>();
     Map<UserQuiz, List<ResultUserQuiz>> userQuizResult = new TreeMap<>();
+    Map<Quiz, List<Question>> quiz = new TreeMap<>();
     private String login;
     private String password;
     private String dateOfBirth;
@@ -34,7 +35,6 @@ public class GameQuiz implements Serializable {
             if (file1.exists()) {
                 userQuizResult = readObjectUserQuizResult(fileName1);
             }
-
             do {
                 System.out.println("Введите логин");
                 System.out.println("exit - выход");
@@ -136,7 +136,22 @@ public class GameQuiz implements Serializable {
             }
 
             menuP_2.addSubMenu(menuP1_2Lev1P1);
-            menuP_2.addSubMenu(menuP1_2Lev1P2);
+            String fileName1 = "Quiz.dat";
+            File file1 = new File(fileName1);
+            if (file1.exists()) {
+                quiz = QuizMapAdd.readObjectQuiz(fileName1);
+            }
+
+            int count = 0;
+            for (Map.Entry<Quiz, List<Question>> rr: quiz.entrySet()){
+                    List<Question> ql = rr.getValue();
+                    for (int i = 0; i < ql.size(); i++) {
+                        count++;
+                }
+            }
+            if (count > 20) {
+                menuP_2.addSubMenu(menuP1_2Lev1P2);
+            }
             menuP_2.addSubMenu(menuP1_2Lev1P3);
             menuP_2.addSubMenu(menuP1_2Lev1P4);
             do {

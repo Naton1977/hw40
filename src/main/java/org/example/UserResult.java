@@ -38,6 +38,6 @@ public class UserResult implements Serializable,Comparable<UserResult> {
 
     @Override
     public int compareTo(UserResult o) {
-        return countCorrectAnswer - o.countCorrectAnswer;
+        return o.countCorrectAnswer - countCorrectAnswer;
     }
 }
