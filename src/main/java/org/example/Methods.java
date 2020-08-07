@@ -111,13 +111,18 @@ class GameUser implements Action<Context> {
                                 } while (true);
                                 if ("end".equals(corrAnsw)) {
                                     resultAnswer = qw.get(i).countCorrAnswer();
-                                    if (resultAnswer == countCorrectAnswer) {
+                                    if (resultAnswer == countCorrectAnswer && countWrongAnswer == 0) {
                                         System.out.println("Ответ правильный");
                                         quizCorrectAnswer++;
                                         countCorrectAnswer = 0;
                                         countWrongAnswer = 0;
+                                        break;
+                                    } else {
+                                        countCorrectAnswer = 0;
+                                        countWrongAnswer = 0;
+                                        break;
                                     }
-                                    break;
+
                                 }
                                 if (!exit) {
                                     corrAnswBool = qw.get(i).corrAnswer(corrAnswInt);
@@ -285,14 +290,20 @@ class GameMixedQuiz implements Action<Context> {
                             } while (true);
                             if ("end".equals(corrAnsw)) {
                                 resultAnswer = q.get(numQuestion).countCorrAnswer();
-                                if (resultAnswer == countCorrectAnswer) {
+                                if (resultAnswer == countCorrectAnswer && countWrongAnswer == 0) {
                                     System.out.println("Ответ правильный");
                                     quizCorrectAnswer++;
                                     countCorrectAnswer = 0;
                                     countWrongAnswer = 0;
                                     q.remove(numQuestion);
+                                    break;
+                                } else {
+                                    countCorrectAnswer = 0;
+                                    countWrongAnswer = 0;
+                                    q.remove(numQuestion);
+                                    break;
                                 }
-                                break;
+
                             }
                             if (!exit) {
                                 corrAnswBool = q.get(numQuestion).corrAnswer(corrAnswInt);
